@@ -350,6 +350,14 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   #btn-battle,#btn-telemetry,#btn-share{font-size:9px;padding:6px 10px;letter-spacing:1px}
   #telemetry-card{left:8px;right:8px;bottom:8px;width:auto;z-index:7}
   #battle-card{right:8px;left:8px;top:8px;width:auto}
+  .brand{display:none}
+  .event-block{flex:1;min-width:0}
+  #event-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #event-circuit{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .clock-block{flex:0 0 auto}
+  #transport{flex-wrap:wrap;gap:8px}
+  .transport-sep{display:none}
+  .play-btn{width:40px;height:40px;flex:0 0 auto}
   .picker-inner{padding:30px 16px 20px}
   .picker-mark{font-size:32px;letter-spacing:6px}
   #picker-grid{grid-template-columns:1fr}
