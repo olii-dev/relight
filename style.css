@@ -259,7 +259,21 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 #picker{position:fixed;inset:0;z-index:40;background:radial-gradient(120% 100% at 50% 0%,#0b0f18 0%,#07090d 60%);
   overflow-y:auto;animation:fadein .4s ease-out}
 .picker-inner{max-width:1180px;margin:0 auto;padding:48px 28px 30px}
-.picker-head{text-align:center;margin-bottom:34px}
+.picker-head{text-align:center;margin-bottom:26px}
+#picker-filters{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:26px}
+.season-chip{font-size:11px;font-weight:900;letter-spacing:1.6px;color:var(--txt-dim);
+  border:1px solid var(--panel-border);border-radius:20px;padding:8px 16px;transition:all .2s}
+.season-chip .sc-count{color:var(--txt-faint);font-weight:700;margin-left:4px}
+.season-chip:hover{color:#fff;border-color:rgba(255,255,255,.35)}
+.season-chip.active{color:#fff;border-color:rgba(225,6,0,.6);background:rgba(225,6,0,.12);
+  box-shadow:0 0 16px rgba(225,6,0,.15)}
+.race-card .rc-watch{position:absolute;bottom:14px;right:14px;font-size:9px;font-weight:900;
+  letter-spacing:1.6px;color:var(--red);opacity:0;transition:opacity .2s;z-index:2}
+.race-card:hover .rc-watch{opacity:1}
+.race-card .rc-podium{display:flex;gap:10px;margin-top:9px;font-size:10.5px;font-weight:700;color:var(--txt-dim)}
+.race-card .rc-pod{display:inline-flex;align-items:center;gap:5px}
+.race-card .rc-pod i{width:8px;height:8px;border-radius:2px;display:inline-block}
+.race-card .rc-pod em{font-style:normal;color:var(--txt-faint);font-size:9px}
 .picker-mark{font-weight:900;font-size:46px;letter-spacing:10px;
   background:linear-gradient(90deg,#fff,#9fb2cc);-webkit-background-clip:text;background-clip:text;color:transparent}
 .picker-sub{font-size:11px;letter-spacing:7px;color:var(--red);font-weight:700;margin-top:4px}

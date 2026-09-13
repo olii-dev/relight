@@ -1091,22 +1091,40 @@ function drawMiniTrack(canvas,track){
   ctx.lineCap='round';ctx.lineJoin='round';
   ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=2;ctx.stroke();
 }
+let pickerSeason=0;
 function buildPicker(){
+  const filt=$('picker-filters');
+  const years=[...new Set(MANIFEST.races.map(r=>r.year))].sort((a,b)=>b-a);
+  filt.innerHTML='';
+  const mk=(label,val)=>{
+    const b=document.createElement('button');
+    b.className='season-chip'+(pickerSeason===val?' active':'');
+    b.innerHTML=label;
+    b.onclick=()=>{ pickerSeason=val; buildPicker(); };
+    filt.appendChild(b);
+  };
+  mk(`ALL <span class="sc-count">${MANIFEST.races.length}</span>`,0);
+  for(const y of years) mk(`${y} <span class="sc-count">${MANIFEST.races.filter(r=>r.year===y).length}</span>`,y);
   const grid=$('picker-grid');
   grid.innerHTML='';
-  const races=[...MANIFEST.races].sort((a,b)=>b.year-a.year||b.date.localeCompare(a.date));
+  const races=[...MANIFEST.races]
+    .filter(r=>!pickerSeason||r.year===pickerSeason)
+    .sort((a,b)=>b.year-a.year||b.date.localeCompare(a.date));
   for(const r of races){
     const c=document.createElement('button');
     c.className='race-card';
-    const p1=r.podium&&r.podium[0];
+    const pod=(r.podium||[]).slice(0,3).map((p,i)=>
+      `<span class="rc-pod"><i style="background:${p.color}"></i><em>P${i+1}</em> ${p.code}</span>`).join('');
+    const date=r.date?new Date(r.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
     c.innerHTML=`
       ${r.telemetry?'<span class="rc-tel">TELEMETRY</span>':''}
-      <div class="rc-year">${r.year}</div>
+      <span class="rc-watch">WATCH REPLAY &#9654;</span>
+      <div class="rc-year">${r.year}${date?` &middot; ${date}`:''}</div>
       <div class="rc-name">${r.event.replace(' Grand Prix','')}<span style="color:var(--red)"> GP</span></div>
       <div class="rc-loc">${r.location}, ${r.country}</div>
       ${r.tag?`<span class="rc-tag">${r.tag}</span>`:''}
-      <div class="rc-meta"><span><b>${r.totalLaps}</b> LAPS</span><span><b>${fmtClock(r.duration).replace(/^0:/,'')}</b> RACE</span>
-      ${p1?`<span class="rc-p1">WINNER <b style="color:${p1.color}">${p1.code}</b></span>`:''}</div>
+      ${pod?`<div class="rc-podium">${pod}</div>`:''}
+      <div class="rc-meta"><span><b>${r.totalLaps}</b> LAPS</span><span><b>${fmtClock(r.duration).replace(/^0:/,'')}</b> RACE</span></div>
       <canvas></canvas>`;
     c.onclick=()=>{ selectRace(r.id); };
     grid.appendChild(c);
