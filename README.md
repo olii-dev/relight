@@ -44,7 +44,32 @@ Bundled races (2018+ era, full telemetry):
 - Scrub the timeline or jump with the moment chips (lead changes, safety cars,
   fastest lap, final lap, chequered flag).
 
-## Adding any other race
+## Adding more races (any FastF1 race, 2018+)
+
+Relight is not a fixed set of races - any Formula 1 race from 2018 onward can be
+exported from the official timing data via [FastF1](https://github.com/theOehrly/FastF1)
+and added to the picker without touching the app code.
+
+**Batch backfill (recommended):** Actions -> "Backfill races" -> Run workflow.
+Pick a year range (newest to oldest, e.g. 2026 down to 2021) and a per-run cap
+(default 6 races). The workflow skips races already exported, runs
+newest-to-oldest, commits the new data files, and rebuilds the picker manifest.
+Re-run it to keep going backwards through history.
+
+**Single race:** Actions -> "Export race" -> Run workflow with a year and GP name.
+
+**Locally:**
+    pip install fastf1
+    python3 export_race.py --year 2024 --gp "Monza" --id 2024-italian --tag ITALIAN --out data/2024-italian.json
+    python3 build_manifest.py
+
+Each race adds one ~3-4 MB JSON file under `data/`. Everything is served as
+static files from GitHub Pages; there is no server and no storage service.
+GitHub Actions is free for public repositories, and a full season of races is
+~80 MB - far inside GitHub's recommended repo and Pages limits. Note F1's
+timing API rate-limits exports, so large backfills are spread over multiple runs.
+
+
 
 Data comes from [FastF1](https://github.com/theOehrly/Fast-F1), which reads the
 official Formula 1 live timing data (full position and timing data from 2018 on).

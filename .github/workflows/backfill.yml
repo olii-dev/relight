@@ -1,0 +1,41 @@
+name: Backfill races
+on:
+  workflow_dispatch:
+    inputs:
+      from_year:
+        description: 'Newest season to include (e.g. 2026)'
+        required: true
+        type: number
+      to_year:
+        description: 'Oldest season to include (2018 or later, FastF1 limit)'
+        required: true
+        type: number
+      max_races:
+        description: 'Safety cap: max races exported in this run'
+        required: true
+        default: 6
+        type: number
+permissions:
+  contents: write
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps
+        run: pip install fastf1
+      - name: Backfill newest-to-oldest
+        run: python3 backfill.py --from-year "${{ inputs.from_year }}" --to-year "${{ inputs.to_year }}" --max "${{ inputs.max_races }}"
+      - name: Rebuild manifest
+        run: python3 build_manifest.py
+      - name: Commit data
+        run: |
+          git config user.name "relight-bot"
+          git config user.email "relight-bot@users.noreply.github.com"
+          git add data/*.json data/races.json
+          git commit -m "Backfill race exports (${{ inputs.from_year }} to ${{ inputs.to_year }})" || echo "nothing to commit"
+          git push
