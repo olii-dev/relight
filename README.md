@@ -74,20 +74,6 @@ timing API rate-limits exports, so large backfills are spread over multiple runs
 Data comes from [FastF1](https://github.com/theOehrly/Fast-F1), which reads the
 official Formula 1 live timing data (full position and timing data from 2018 on).
 
-**Easiest way - GitHub Action:** repo Actions tab -> "Export race" -> Run workflow ->
-enter year, Grand Prix name, an id and a tagline. The workflow exports the session,
-rebuilds the library manifest, and commits the new data. The site updates itself.
-
-**Locally:**
-
-```bash
-pip install -r requirements.txt
-python3 export_race.py --year 2023 --gp "Monza" --id 2023-italian --tag "YOUR TAGLINE" --out data/2023-italian.json
-python3 build_manifest.py
-```
-
-Commit the new `data/*.json` and `data/races.json`.
-
 ## Run it yourself
 
 Static site - serve this folder with anything:
