@@ -274,6 +274,21 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 .race-card .rc-pod{display:inline-flex;align-items:center;gap:5px}
 .race-card .rc-pod i{width:8px;height:8px;border-radius:2px;display:inline-block}
 .race-card .rc-pod em{font-style:normal;color:var(--txt-faint);font-size:9px}
+#picker-search-wrap{display:flex;justify-content:center;margin:-12px 0 24px}
+#picker-search{width:min(480px,92%);background:rgba(255,255,255,.05);border:1px solid var(--panel-border);
+  border-radius:22px;padding:11px 20px;color:var(--txt);font-family:var(--font);font-size:14px;outline:none;
+  transition:border-color .2s,box-shadow .2s}
+#picker-search:focus{border-color:rgba(225,6,0,.55);box-shadow:0 0 20px rgba(225,6,0,.12)}
+#picker-search::placeholder{color:var(--txt-faint)}
+.picker-empty{grid-column:1/-1;text-align:center;color:var(--txt-dim);font-size:14px;padding:60px 0}
+.picker-empty button{margin-left:12px;font-size:10px;font-weight:900;letter-spacing:1.4px;color:var(--red);
+  border:1px solid rgba(225,6,0,.45);border-radius:16px;padding:7px 14px}
+.picker-empty button:hover{background:rgba(225,6,0,.12)}
+#picker-grid.compact{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+#picker-grid.compact .race-card{padding:14px 16px 12px}
+#picker-grid.compact .race-card .rc-name{font-size:16px}
+#picker-grid.compact .race-card .rc-tag,#picker-grid.compact .race-card .rc-podium{display:none}
+#picker-grid.compact .race-card canvas{width:120px;height:92px}
 .picker-mark{font-weight:900;font-size:46px;letter-spacing:10px;
   background:linear-gradient(90deg,#fff,#9fb2cc);-webkit-background-clip:text;background-clip:text;color:transparent}
 .picker-sub{font-size:11px;letter-spacing:7px;color:var(--red);font-weight:700;margin-top:4px}

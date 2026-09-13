@@ -1091,7 +1091,7 @@ function drawMiniTrack(canvas,track){
   ctx.lineCap='round';ctx.lineJoin='round';
   ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=2;ctx.stroke();
 }
-let pickerSeason=0;
+let pickerSeason=0,pickerQuery='';
 function buildPicker(){
   const filt=$('picker-filters');
   const years=[...new Set(MANIFEST.races.map(r=>r.year))].sort((a,b)=>b-a);
@@ -1107,9 +1107,19 @@ function buildPicker(){
   for(const y of years) mk(`${y} <span class="sc-count">${MANIFEST.races.filter(r=>r.year===y).length}</span>`,y);
   const grid=$('picker-grid');
   grid.innerHTML='';
+  const q=pickerQuery.trim().toLowerCase();
+  const match=r=>!q||[r.event,r.location,r.country,r.tag,String(r.year)].filter(Boolean)
+    .some(s=>String(s).toLowerCase().includes(q));
   const races=[...MANIFEST.races]
-    .filter(r=>!pickerSeason||r.year===pickerSeason)
+    .filter(r=>(!pickerSeason||r.year===pickerSeason)&&match(r))
     .sort((a,b)=>b.year-a.year||b.date.localeCompare(a.date));
+  grid.classList.toggle('compact',races.length>12);
+  if(!races.length){
+    grid.innerHTML=`<div class="picker-empty">No races match${q?` &ldquo;${pickerQuery.trim()}&rdquo;`:''}.
+      <button id="picker-reset">RESET FILTERS</button></div>`;
+    $('picker-reset').onclick=()=>{ pickerSeason=0; pickerQuery=''; $('picker-search').value=''; buildPicker(); };
+    return;
+  }
   for(const r of races){
     const c=document.createElement('button');
     c.className='race-card';
@@ -1131,6 +1141,7 @@ function buildPicker(){
     drawMiniTrack(c.querySelector('canvas'),r.track);
   }
 }
+$('picker-search').addEventListener('input',e=>{ pickerQuery=e.target.value; buildPicker(); });
 function showPicker(){
   setPlaying(false);
   $('picker').classList.remove('hidden');
