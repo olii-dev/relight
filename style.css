@@ -367,10 +367,9 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   #lap-counter{font-size:17px}
   #status-chip{font-size:10px;padding:6px 9px;letter-spacing:1px}
   #races-btn{font-size:9px;padding:5px 8px}
-  #stage{flex-direction:column}
-  #map-wrap{order:0;flex:0 0 34dvh}
-  #tower-wrap{order:1;flex:1;border-right:none;border-top:1px solid var(--panel-border)}
   .row .name{display:none}
+  .tyrechip{width:18px;height:18px;font-size:8.5px}
+  .tyrechip::after{inset:-2px}
   #focus-card{top:8px;left:8px;min-width:150px;padding:7px 10px}
   #rc-ticker{left:8px;bottom:8px;padding:6px 10px}
   #rc-text{font-size:11px}
@@ -391,4 +390,25 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
   .picker-mark{font-size:32px;letter-spacing:6px}
   #picker-grid{grid-template-columns:1fr}
   .race-card canvas{width:130px;height:100px}
+}
+
+@media (max-width:900px) and (orientation:portrait){
+  #stage{flex-direction:column}
+  #map-wrap{order:0;flex:0 0 34dvh}
+  #tower-wrap{order:1;flex:1;border-right:none;border-top:1px solid var(--panel-border)}
+}
+@media (max-width:900px) and (orientation:landscape){
+  #tower-wrap{flex:0 0 310px}
+  #topbar{padding:4px 12px}
+  #moments{display:none}
+  #controls{padding:4px 10px 6px;gap:4px}
+  #timeline{height:20px}
+  .play-btn{width:34px;height:34px}
+  .spd{padding:4px 8px;font-size:10px}
+  #btn-battle,#btn-telemetry,#btn-share{padding:5px 9px;font-size:8.5px}
+  .row .code{font-size:12px;width:38px}
+  .row .gap,.row .int{font-size:10.5px}
+  .race-card{max-width:540px}
+  .tyrechip{width:11px;height:11px;font-size:6px}
+  .tyrechip::after{display:none}
 }

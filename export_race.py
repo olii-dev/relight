@@ -11,6 +11,8 @@ import argparse, json, math, os, sys, time
 import fastf1
 import pandas as pd
 
+fastf1.Cache.enable_cache('/tmp/fastf1_cache')
+
 def td_s(x):
     if x is None or (isinstance(x, float) and math.isnan(x)) or pd.isna(x):
         return None
@@ -63,18 +65,25 @@ def export(year, gp, race_id, tag, out, with_telemetry=True):
             'sectors': secs,
         })
 
-    track_status = [{'time': td_s(r['Time']), 'status': str(r['Status']), 'message': str(r['Message'])}
-                    for _, r in s.track_status.iterrows()]
+    try:
+        track_status = [{'time': td_s(r['Time']), 'status': str(r['Status']), 'message': str(r['Message'])}
+                        for _, r in s.track_status.iterrows()]
+    except Exception as e:
+        print('track_status unavailable, continuing without it:', e)
+        track_status = []
 
-    t0 = s.t0_date
     msgs = []
-    for _, m in s.race_control_messages.iterrows():
-        msgs.append({
-            'time': ts_s(m['Time'], t0),
-            'category': str(m.get('Category', '')),
-            'message': str(m.get('Message', '')),
-            'flag': None if pd.isna(m.get('Flag')) else str(m.get('Flag')),
-        })
+    try:
+        t0 = s.t0_date
+        for _, m in s.race_control_messages.iterrows():
+            msgs.append({
+                'time': ts_s(m['Time'], t0),
+                'category': str(m.get('Category', '')),
+                'message': str(m.get('Message', '')),
+                'flag': None if pd.isna(m.get('Flag')) else str(m.get('Flag')),
+            })
+    except Exception as e:
+        print('race_control_messages unavailable, continuing without them:', e)
 
     # track outline from a clean mid-race lap of the winner
     ref = str(s.results.iloc[0]['DriverNumber'])
@@ -166,6 +175,7 @@ def main():
             export(args.year, args.gp, args.id, args.tag, args.out)
             return
         except Exception as e:
+            import traceback; traceback.print_exc()
             print(f'attempt {attempt} failed: {type(e).__name__}: {e}', flush=True)
             if os.path.exists(args.out):
                 os.remove(args.out)

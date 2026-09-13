@@ -348,7 +348,7 @@ function buildTower(){
 function layoutRows(){
   const tower=$('tower');
   const h=tower.clientHeight;
-  const rh=Math.max(18,h/20);
+  const rh=Math.max(window.matchMedia('(max-width:900px) and (orientation:landscape)').matches?11:18,h/20);
   tower.style.setProperty('--row-h',rh+'px');
 }
 function renderTower(tNow){
@@ -1125,7 +1125,7 @@ function buildPicker(){
     c.className='race-card';
     const pod=(r.podium||[]).slice(0,3).map((p,i)=>
       `<span class="rc-pod"><i style="background:${p.color}"></i><em>P${i+1}</em> ${p.code}</span>`).join('');
-    const date=r.date?new Date(r.date+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
+    const date=r.date?new Date(String(r.date).slice(0,10)+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
     c.innerHTML=`
       ${r.telemetry?'<span class="rc-tel">TELEMETRY</span>':''}
       <span class="rc-watch">WATCH REPLAY &#9654;</span>
@@ -1223,10 +1223,11 @@ function bindStatic(){
   $('races-btn').onclick=showPicker;
   $('brand-home').onclick=showPicker;
   $('btn-share').onclick=copyMomentLink;
+function smallScreen(){ return window.matchMedia('(max-width:900px)').matches; }
   $('btn-battle').onclick=()=>{
     if(!D) return;
     if(battle){battle=null;$('btn-battle').classList.remove('active');}
-    else openBattlePicker();
+    else{ if(smallScreen()){telemetryOn=false;$('btn-telemetry').classList.remove('active');} openBattlePicker(); }
   };
   $('bp-cancel').onclick=()=>$('battle-picker').classList.add('hidden');
   $('bp-go').onclick=()=>{
@@ -1239,6 +1240,7 @@ function bindStatic(){
   $('btn-telemetry').onclick=()=>{
     if(!D) return;
     telemetryOn=!telemetryOn;
+    if(telemetryOn&&smallScreen()&&battle){battle=null;$('btn-battle').classList.remove('active');}
     if(telemetryOn&&!focus){
       const ln=leaderAt(t);
       if(ln){focus=ln;updateFocusCard();}
