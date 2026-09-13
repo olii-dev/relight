@@ -302,7 +302,13 @@ function stateOf(d,tNow,leader){
   let gapPhys=null;
   if(leader&&leader.number!==d.number&&rdD!=null){
     const rdL=raceDistAt(leader,tNow);
-    if(rdL!=null) gapPhys=gapSecs(adjGap(rdL-rdD),leader,tNow);
+    if(rdL!=null){
+      // laps down from race distance: a car may have crossed the line
+      // (unlapping under SC) yet still be nearly a full lap behind.
+      const ddL=rdL-rdD;
+      lapped=Math.max(0,Math.round(ddL/trackGeom.L));
+      gapPhys=gapSecs(lapped===0?adjGap(ddL):ddL,leader,tNow);
+    }
   }
 
   let inPit=false,pitDur=null;
@@ -363,7 +369,8 @@ function renderTower(tNow){
     const pi=physIdx[n];
     if(pi!=null&&pi>0){
       const ahead=phys[pi-1];
-      int=gapSecs(adjGap(ahead.rd-phys[pi].rd),byNum[ahead.num],tNow);
+      const ddI=ahead.rd-phys[pi].rd;
+      int=gapSecs(Math.round(ddI/trackGeom.L)===0?adjGap(ddI):ddI,byNum[ahead.num],tNow);
       if(int!=null&&int<0) int=0;
     }
     st.intPhys=int;
@@ -817,7 +824,8 @@ function battleGap(tNow){
   if(!A||!B) return null;
   const rdA=raceDistAt(A,tNow),rdB=raceDistAt(B,tNow);
   if(rdA==null||rdB==null) return null;
-  const dd=adjGap(rdA-rdB);
+  const ddRaw=rdA-rdB;
+  const dd=Math.round(ddRaw/trackGeom.L)===0?adjGap(ddRaw):ddRaw;
   const lead=dd>=0?A:B;
   return gapSecs(dd,lead,tNow); // >0: A ahead
 }
