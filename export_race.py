@@ -160,7 +160,7 @@ def main():
     ap.add_argument('--out', required=True)
     ap.add_argument('--retries', type=int, default=6)
     args = ap.parse_args()
-    fastf1.Cache.enable_cache('/tmp/ff1cache')
+    import os; os.makedirs('/tmp/ff1cache',exist_ok=True); fastf1.Cache.enable_cache('/tmp/ff1cache')
     for attempt in range(1, args.retries + 1):
         try:
             export(args.year, args.gp, args.id, args.tag, args.out)
