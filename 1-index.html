@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>RELIGHT - F1 Race Replay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <div class="brand">
+      <div class="brand-mark">RELIGHT</div>
+      <div class="brand-sub">HISTORIC RACE REPLAY</div>
+    </div>
+    <div class="event-block">
+      <div id="event-name">-</div>
+      <div id="event-circuit">-</div>
+    </div>
+    <div class="clock-block">
+      <div id="lap-counter"><span id="lap-cur">-</span><span class="lap-total" id="lap-total">/-</span></div>
+      <div class="clock-row">
+        <span id="race-clock">0:00:00</span>
+        <span id="live-chip"><span class="live-dot"></span>REPLAY</span>
+      </div>
+    </div>
+    <div id="status-chip" class="status-green">GREEN</div>
+  </header>
+
+  <main id="stage">
+    <section id="tower-wrap">
+      <div id="tower-head">
+        <span class="th-pos">P</span><span class="th-driver">DRIVER</span>
+        <span class="th-tyre">TYRE</span><span class="th-gap">GAP</span><span class="th-int">INT</span>
+      </div>
+      <div id="tower"></div>
+    </section>
+
+    <section id="map-wrap">
+      <canvas id="trackmap"></canvas>
+      <div id="focus-card" class="hidden"></div>
+      <div id="rc-ticker" class="hidden">
+        <span class="rc-label">RACE CONTROL</span>
+        <span id="rc-text"></span>
+      </div>
+      <div id="sc-banner" class="hidden">
+        <span id="sc-text">SAFETY CAR</span>
+      </div>
+      <div id="finish-overlay" class="hidden">
+        <div class="finish-flag"></div>
+        <div class="finish-title">CHEQUERED FLAG</div>
+        <div id="podium"></div>
+        <button id="replay-again">WATCH AGAIN</button>
+      </div>
+    </section>
+  </main>
+
+  <footer id="controls">
+    <div id="timeline-wrap">
+      <div id="timeline">
+        <div id="timeline-fill"></div>
+        <div id="timeline-markers"></div>
+        <div id="timeline-knob"></div>
+        <input type="range" id="scrubber" min="0" max="1000" value="0" step="1" aria-label="Race timeline">
+      </div>
+      <div id="moments"></div>
+    </div>
+    <div id="transport">
+      <button id="btn-restart" title="Restart (R)">&#x23EE;</button>
+      <button id="btn-play" class="play-btn" title="Play / pause (Space)">
+        <svg id="icon-pause" viewBox="0 0 24 24" width="20" height="20"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg>
+        <svg id="icon-play" viewBox="0 0 24 24" width="20" height="20" class="hidden"><path d="M7 4.5v15l13-7.5z"/></svg>
+      </button>
+      <div id="speed-group"></div>
+    </div>
+  </footer>
+</div>
+<div id="loading">
+  <div class="loading-inner">
+    <div class="loading-mark">RELIGHT</div>
+    <div class="loading-bar"><div class="loading-fill"></div></div>
+    <div id="loading-status">LOADING RACE DATA</div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
