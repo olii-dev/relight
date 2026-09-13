@@ -348,7 +348,9 @@ function buildTower(){
 function layoutRows(){
   const tower=$('tower');
   const h=tower.clientHeight;
-  const rh=Math.max(window.matchMedia('(max-width:900px) and (orientation:landscape)').matches?11:18,h/20);
+  const n=Math.max(20,Object.keys(rowEls).length);
+  const floor=window.matchMedia('(max-width:900px) and (orientation:landscape)').matches?11:15;
+  const rh=Math.max(floor,h/n);
   tower.style.setProperty('--row-h',rh+'px');
 }
 function renderTower(tNow){
@@ -1234,6 +1236,7 @@ function smallScreen(){ return window.matchMedia('(max-width:900px)').matches; }
     battle={a:bpSel.a,b:bpSel.b};
     $('btn-battle').classList.add('active');
     $('battle-picker').classList.add('hidden');
+    if(smallScreen()&&telemetryOn){telemetryOn=false;$('btn-telemetry').classList.remove('active');}
   };
   $('bt-close').onclick=()=>{battle=null;$('btn-battle').classList.remove('active');};
   $('bt-swap').onclick=()=>{if(battle){battle={a:battle.b,b:battle.a};}};

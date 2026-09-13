@@ -394,7 +394,7 @@ button{font-family:var(--font);cursor:pointer;border:none;background:none;color:
 
 @media (max-width:900px) and (orientation:portrait){
   #stage{flex-direction:column}
-  #map-wrap{order:0;flex:0 0 34dvh}
+  #map-wrap{order:0;flex:0 0 28dvh}
   #tower-wrap{order:1;flex:1;border-right:none;border-top:1px solid var(--panel-border)}
 }
 @media (max-width:900px) and (orientation:landscape){
