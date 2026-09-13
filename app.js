@@ -357,6 +357,7 @@ function renderTower(tNow){
   const leaderNum=leaderAt(tNow);
   const leader=byNum[leaderNum];
   const tower=$('tower');
+  layoutRows();
   const rh=parseFloat(getComputedStyle(tower).getPropertyValue('--row-h'))||tower.clientHeight/20;
   const phys=physOrder(tNow);
   const physIdx={};
