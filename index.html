@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>RELIGHT - F1 Race Replay</title>
+<title>RELIGHT - Replay any F1 race like it's live</title>
+<meta name="description" content="RELIGHT replays historic Formula 1 races like a live broadcast: animated timing tower, gaps, tyre wear, pit strategy, DRS battles, telemetry and track map - powered by real FastF1 timing data.">
+<meta property="og:title" content="RELIGHT - Historic F1 Race Replay">
+<meta property="og:description" content="Pick a Grand Prix from history and watch it unfold like a live broadcast. Timing tower, track map, telemetry, battle mode.">
+<meta property="og:url" content="https://relight.mebbo.cloud">
+<link rel="canonical" href="https://relight.mebbo.cloud">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
@@ -12,14 +17,15 @@
 <body>
 <div id="app">
   <header id="topbar">
-    <div class="brand">
+    <button class="brand" id="brand-home" title="All races">
       <div class="brand-mark">RELIGHT</div>
       <div class="brand-sub">HISTORIC RACE REPLAY</div>
-    </div>
+    </button>
     <div class="event-block">
       <div id="event-name">-</div>
       <div id="event-circuit">-</div>
     </div>
+    <button id="races-btn" title="All races">RACES</button>
     <div class="clock-block">
       <div id="lap-counter"><span id="lap-cur">-</span><span class="lap-total" id="lap-total">/-</span></div>
       <div class="clock-row">
@@ -42,6 +48,46 @@
     <section id="map-wrap">
       <canvas id="trackmap"></canvas>
       <div id="focus-card" class="hidden"></div>
+
+      <div id="telemetry-card" class="hidden">
+        <div class="tc-head">
+          <span class="tc-code" id="tc-code">-</span>
+          <span class="tc-title">TELEMETRY</span>
+          <button class="tc-close" id="tc-close" title="Close">&times;</button>
+        </div>
+        <div class="tc-live">
+          <div class="tc-speed"><span id="tc-speed">-</span><span class="tc-unit">km/h</span></div>
+          <div class="tc-mid">
+            <div class="tc-gearrow"><span class="tc-label">GEAR</span><span id="tc-gear">-</span></div>
+            <div class="tc-bar-row"><span class="tc-label">RPM</span><div class="tc-bar"><div id="tc-rpm" class="tc-fill rpm"></div></div></div>
+            <div class="tc-bar-row"><span class="tc-label">THR</span><div class="tc-bar"><div id="tc-thr" class="tc-fill thr"></div></div></div>
+            <div class="tc-bar-row"><span class="tc-label">BRK</span><div class="tc-bar"><div id="tc-brk" class="tc-fill brk"></div></div></div>
+          </div>
+          <div id="tc-drs" class="tc-drs">DRS</div>
+        </div>
+        <canvas id="tc-trace" height="110"></canvas>
+        <div class="tc-trace-labels"><span id="tc-lap-label">LAP -</span><span id="tc-trace-note">speed vs distance - ghost: prev lap</span></div>
+      </div>
+
+      <div id="battle-card" class="hidden">
+        <div class="bt-head">
+          <span class="bt-title">BATTLE</span>
+          <button class="bt-swap" id="bt-swap" title="Swap drivers">&#8646;</button>
+          <button class="bt-close" id="bt-close" title="Close">&times;</button>
+        </div>
+        <div class="bt-drivers">
+          <div class="bt-driver" id="bt-a"></div>
+          <div class="bt-gap">
+            <div id="bt-gap-val">-</div>
+            <div id="bt-gap-note">GAP</div>
+          </div>
+          <div class="bt-driver right" id="bt-b"></div>
+        </div>
+        <div id="bt-flags"></div>
+        <canvas id="bt-chart" height="86"></canvas>
+        <div class="bt-chart-label">gap over race - positive: A ahead</div>
+      </div>
+
       <div id="rc-ticker" class="hidden">
         <span class="rc-label">RACE CONTROL</span>
         <span id="rc-text"></span>
@@ -53,7 +99,11 @@
         <div class="finish-flag"></div>
         <div class="finish-title">CHEQUERED FLAG</div>
         <div id="podium"></div>
-        <button id="replay-again">WATCH AGAIN</button>
+        <div class="finish-actions">
+          <button id="replay-again">WATCH AGAIN</button>
+          <button id="finish-share" class="ghost-btn">COPY MOMENT LINK</button>
+          <button id="finish-races" class="ghost-btn">MORE RACES</button>
+        </div>
       </div>
     </section>
   </main>
@@ -75,9 +125,45 @@
         <svg id="icon-play" viewBox="0 0 24 24" width="20" height="20" class="hidden"><path d="M7 4.5v15l13-7.5z"/></svg>
       </button>
       <div id="speed-group"></div>
+      <div class="transport-sep"></div>
+      <button id="btn-battle" title="Battle mode: pick two drivers">BATTLE</button>
+      <button id="btn-telemetry" title="Driver telemetry">TELEMETRY</button>
+      <button id="btn-share" title="Copy link to this exact moment">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 14a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 5.4"/><path d="M14 10a5 5 0 0 0-7.07 0L4.1 12.83a5 5 0 0 0 7.07 7.07l1.3-1.3"/></svg>
+        SHARE
+      </button>
     </div>
   </footer>
 </div>
+
+<div id="picker" class="hidden">
+  <div class="picker-inner">
+    <div class="picker-head">
+      <div class="picker-mark">RELIGHT</div>
+      <div class="picker-sub">HISTORIC RACE REPLAY</div>
+      <p class="picker-blurb">Pick a Grand Prix. Watch it unfold like it's live - timing tower, track map,
+      telemetry, battles, safety cars. Real timing data, every lap.</p>
+    </div>
+    <div id="picker-grid"></div>
+    <div class="picker-foot">Data: official F1 timing via FastF1 - personal, non-commercial use</div>
+  </div>
+</div>
+
+<div id="battle-picker" class="hidden">
+  <div class="bp-box">
+    <div class="bp-title">BATTLE MODE</div>
+    <div class="bp-hint">Pick two drivers to compare</div>
+    <div class="bp-slots"><span id="bp-slot-a">A: -</span><span class="bp-vs">vs</span><span id="bp-slot-b">B: -</span></div>
+    <div id="bp-grid"></div>
+    <div class="bp-actions">
+      <button id="bp-go" disabled>START BATTLE</button>
+      <button id="bp-cancel" class="ghost-btn">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="hidden">LINK COPIED</div>
+
 <div id="loading">
   <div class="loading-inner">
     <div class="loading-mark">RELIGHT</div>

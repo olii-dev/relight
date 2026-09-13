@@ -1,0 +1,45 @@
+name: Export race
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 'Season year (2018 or later)'
+        required: true
+        type: number
+      gp:
+        description: 'Grand Prix name, e.g. "Monza" or "Brazil"'
+        required: true
+        type: string
+      id:
+        description: 'Race id, e.g. 2021-italian (lowercase, dashes)'
+        required: true
+        type: string
+      tag:
+        description: 'Short tagline for the picker card (optional)'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Export race data
+        run: python3 export_race.py --year "${{ inputs.year }}" --gp "${{ inputs.gp }}" --id "${{ inputs.id }}" --tag "${{ inputs.tag }}" --out "data/${{ inputs.id }}.json" --retries 8
+      - name: Rebuild manifest
+        run: python3 build_manifest.py
+      - name: Commit data
+        run: |
+          git config user.name "relight-bot"
+          git config user.email "relight-bot@users.noreply.github.com"
+          git add "data/${{ inputs.id }}.json" data/races.json
+          git commit -m "Add race export: ${{ inputs.id }}" || echo "nothing to commit"
+          git push
